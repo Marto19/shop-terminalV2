@@ -6,12 +6,15 @@ import org.example.shop.exceptions.InsufficientBalance;
 import org.example.shop.exceptions.NameException;
 import org.example.shop.exceptions.NotEnoughQuantity;
 import org.example.shop.goods.Goods;
+import org.example.shop.goods.GoodsType;
 import org.example.shop.goods.SoldGoods;
 import org.example.shop.services.CheckoutServices;
 
 import java.io.*;
 import java.math.BigDecimal;
 import java.rmi.server.UID;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class Checkouts implements CheckoutServices, Serializable{
@@ -106,7 +109,7 @@ public class Checkouts implements CheckoutServices, Serializable{
     }
 
     @Override
-    public void checkGoodExpiryDate() {
+    public void checkGoodExpiryDate(Goods goods, Shop shop) {
 
     }
 

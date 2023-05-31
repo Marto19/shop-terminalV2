@@ -100,7 +100,7 @@ public class Main {
                                 org.example.shop.goods.Goods newGoods = new org.example.shop.goods.Goods(goods, unitShippingCost, goodsType, expiryDate, quantity);
                                 BigDecimal expiryDiscount = shop.getExpiryDiscount();
                                 BigDecimal sellingPrice = shop.calculateGoodsSellingPrice(newGoods, expiryDiscount);
-                                newGoods.setFinalPrice(sellingPrice);
+                                //newGoods.setFinalPrice(sellingPrice);
                                 shop.addGoodsToSet(newGoods);
 
                                 System.out.println("Goods added!");
@@ -115,7 +115,7 @@ public class Main {
 
                                 org.example.shop.goods.Goods newGoods = new org.example.shop.goods.Goods(goods, unitShippingCost, goodsType, expiryDate, quantity);
                                 BigDecimal sellingPrice = shop.calculateGoodsSellingPrice(newGoods, BigDecimal.valueOf(0));
-                                newGoods.setFinalPrice(sellingPrice);
+                                //newGoods.setFinalPrice(sellingPrice);
                                 shop.addGoodsToSet(newGoods);
 
                                 System.out.println("Goods added!");
@@ -245,4 +245,5 @@ public class Main {
 
 TODO: check why the shopping list is empty and the total value 0
 TODO: fix the calculation of the markup properly
+TODO: actually check the expiration date when an item is sold(in checkout). and apply markup
 * */

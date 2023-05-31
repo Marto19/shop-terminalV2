@@ -118,13 +118,13 @@ public class Shop implements ShopServices {
 //        if (daysUntilExpiry <= getDaysUntilExpiryDiscountApplied()) {
 //            sellingPrice = subtractFromPrice(sellingPrice, expiryDiscount);
 //        }
-//        goods.setFinalPrice(sellingPrice);
+//        goods.setFinalPrice(sellingPrice);//u was the problem
         return sellingPrice;
     }
 
     private void applyMarkup(BigDecimal cost, BigDecimal markup, Goods goods) {
         BigDecimal percent = markup.divide(BigDecimal.valueOf(100));
-        goods.setUnitShippingCost(cost.add(cost.multiply(percent)));
+        goods.setFinalPrice(cost.add(cost.multiply(percent)));
     }
 
 
