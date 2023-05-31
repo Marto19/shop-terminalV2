@@ -114,18 +114,19 @@ public class Shop implements ShopServices {
         applyMarkup(unitShippingCost, markup, goods);
 
         BigDecimal sellingPrice = unitShippingCost.add(markup);
-
         // Apply expiry date discount if applicable
-        if (daysUntilExpiry <= getDaysUntilExpiryDiscountApplied()) {
-            sellingPrice = subtractFromPrice(sellingPrice, expiryDiscount);
-        }
-        goods.setFinalPrice(sellingPrice);
+//        if (daysUntilExpiry <= getDaysUntilExpiryDiscountApplied()) {
+//            sellingPrice = subtractFromPrice(sellingPrice, expiryDiscount);
+//        }
+//        goods.setFinalPrice(sellingPrice);
         return sellingPrice;
     }
+
     private void applyMarkup(BigDecimal cost, BigDecimal markup, Goods goods) {
         BigDecimal percent = markup.divide(BigDecimal.valueOf(100));
         goods.setUnitShippingCost(cost.add(cost.multiply(percent)));
     }
+
 
     private BigDecimal subtractFromPrice(BigDecimal price, BigDecimal discount) {
         BigDecimal percent = discount.divide(BigDecimal.valueOf(100));

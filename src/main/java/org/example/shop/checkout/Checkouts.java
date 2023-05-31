@@ -105,6 +105,11 @@ public class Checkouts implements CheckoutServices, Serializable{
        }
     }
 
+    @Override
+    public void checkGoodExpiryDate() {
+
+    }
+
     public void handleNameException(){
         try {
             throw new NameException("Invalid goods name. Please try again.");

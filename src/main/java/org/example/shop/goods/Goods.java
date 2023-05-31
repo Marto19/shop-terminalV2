@@ -24,7 +24,6 @@ public class Goods {
         }else {
             this.expiryDate = expiryDate;
         }
-        this.finalPrice = BigDecimal.valueOf(0);
         this.quantity = quantity;
     }
 

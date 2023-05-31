@@ -17,9 +17,9 @@ public class Main {
         System.out.println("Hello, welcome to the Shop Simulator!");
 
         BigDecimal foodMarkup;
-        BigDecimal nonFoodMarkup = null;
-        int daysUntilExpiryDiscount = 0;
-        BigDecimal expiryDateDiscount = null;
+        BigDecimal nonFoodMarkup;
+        int daysUntilExpiryDiscount;
+        BigDecimal expiryDateDiscount;
         Shop shop = null;
 
         Scanner scanner = new Scanner(System.in);
@@ -74,7 +74,6 @@ public class Main {
                     } else {
                         System.out.println("Add store goods");
                         System.out.println("Enter the goods to add (one per line, leave blank to finish):");
-                        Set<String> storeGoods = new HashSet<>();
                         String goods = scanner.nextLine();
                         while (!goods.isEmpty()) {
                             System.out.print("Enter the unit shipping cost: ");
@@ -101,7 +100,7 @@ public class Main {
                                 org.example.shop.goods.Goods newGoods = new org.example.shop.goods.Goods(goods, unitShippingCost, goodsType, expiryDate, quantity);
                                 BigDecimal expiryDiscount = shop.getExpiryDiscount();
                                 BigDecimal sellingPrice = shop.calculateGoodsSellingPrice(newGoods, expiryDiscount);
-                                newGoods.setUnitShippingCost(sellingPrice);
+                                newGoods.setFinalPrice(sellingPrice);
                                 shop.addGoodsToSet(newGoods);
 
                                 System.out.println("Goods added!");
@@ -109,9 +108,6 @@ public class Main {
 
                                 goods = scanner.nextLine();
                             } else {
-                                System.out.print("Enter the final price: ");
-                                BigDecimal finalPrice = scanner.nextBigDecimal();
-                                scanner.nextLine(); // Consume newline character
 
                                 System.out.print("Enter the quantity: ");
                                 int quantity = scanner.nextInt();
@@ -119,7 +115,7 @@ public class Main {
 
                                 org.example.shop.goods.Goods newGoods = new org.example.shop.goods.Goods(goods, unitShippingCost, goodsType, expiryDate, quantity);
                                 BigDecimal sellingPrice = shop.calculateGoodsSellingPrice(newGoods, BigDecimal.valueOf(0));
-                                newGoods.setUnitShippingCost(sellingPrice);
+                                newGoods.setFinalPrice(sellingPrice);
                                 shop.addGoodsToSet(newGoods);
 
                                 System.out.println("Goods added!");
