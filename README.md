@@ -34,7 +34,7 @@ To use this application, follow these steps:
 
 ## Contributors
 
-This project is developed and maintained by [Your Name]. Contributions and suggestions are welcome. Please submit any issues or feature requests through the GitHub repository.
+This project is developed and maintained by Martin Trenkov. Contributions and suggestions are welcome. Please submit any issues or feature requests through the GitHub repository.
 
 ## License
 
