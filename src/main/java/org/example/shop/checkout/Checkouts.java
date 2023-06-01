@@ -2,6 +2,7 @@ package org.example.shop.checkout;
 
 import org.example.shop.Cashiers;
 import org.example.shop.Shop;
+import org.example.shop.exceptions.ExpiryDateException;
 import org.example.shop.exceptions.InsufficientBalance;
 import org.example.shop.exceptions.NameException;
 import org.example.shop.exceptions.NotEnoughQuantity;
@@ -19,7 +20,7 @@ import java.util.*;
 
 public class Checkouts implements CheckoutServices, Serializable{
     private UUID uuid;
-    public Checkouts(UID uid) {
+    public Checkouts() {
         this.uuid = UUID.randomUUID();
     }
     public UUID getUid() {
@@ -76,19 +77,11 @@ public class Checkouts implements CheckoutServices, Serializable{
 
             // Get the selected goods item from the shop
             Goods selectedGoods = shop.findGoodsByName(goodsName);
+            checkGoodExpiryDate(selectedGoods, shop, totalSum);
 
             // Create a new SoldGoods object with the necessary parameters
-            SoldGoods soldGoods = new SoldGoods(
-                    selectedGoods.getUuid(),
-                    selectedGoods.getName(),
-                    selectedGoods.getUnitShippingCost(),
-                    selectedGoods.getGoodsType(),
-                    selectedGoods.getExpiryDate(),
-                    requestedQuantity,
-                    selectedGoods.getFinalPrice()
-            );
 
-            BigDecimal goodsValue = soldGoods.getFinalPrice().multiply(BigDecimal.valueOf(requestedQuantity));
+            BigDecimal goodsValue = selectedGoods.getFinalPrice().multiply(BigDecimal.valueOf(requestedQuantity));
             totalSum = totalSum.add(goodsValue);
         }
 
@@ -103,14 +96,44 @@ public class Checkouts implements CheckoutServices, Serializable{
         if (selectedGoods == null) {
             handleNameException();
         }
-       if (selectedGoods.getQuantity() < requestedQuantity ){
-           handleNotEnoughtQuantity(requestedQuantity, selectedGoods, shop);
-       }
+        if (selectedGoods.getQuantity() < requestedQuantity ){
+            handleNotEnoughtQuantity(requestedQuantity, selectedGoods, shop);
+        }
     }
 
     @Override
-    public void checkGoodExpiryDate(Goods goods, Shop shop) {
+    public BigDecimal checkGoodExpiryDate(Goods goods, Shop shop, BigDecimal totalValue) {
+        int daysUntilExpiry = 0;
+        // Check if the selected goods have expired
 
+        if (goods.getGoodsType() == GoodsType.FOOD) {
+            LocalDate expiryDate = goods.getExpiryDate();
+            LocalDate currentDate = LocalDate.now();
+            if (expiryDate != null) {
+                daysUntilExpiry = (int) currentDate.until(expiryDate, ChronoUnit.DAYS);
+            }
+        }
+
+        if (daysUntilExpiry < 0) {
+            handleExpiryProduct();
+        }else if(totalValue == null){
+            return totalValue;
+        }
+        else if (daysUntilExpiry <= shop.getDaysUntilExpiryDiscountApplied()) {
+            totalValue = shop.subtractFromPrice(goods.getFinalPrice(), shop.getExpiryDiscount());
+        }
+
+        return totalValue;
+        //goods.setFinalPrice(sellingPrice);//u was the problem
+        //no need to set the final price of the product instead if we want to set it explicitly
+    }
+
+    private void handleExpiryProduct(){
+        try {
+            throw new ExpiryDateException("This product has expired.");
+        } catch (ExpiryDateException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void handleNameException(){

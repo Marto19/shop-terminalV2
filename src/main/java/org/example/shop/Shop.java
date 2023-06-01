@@ -128,7 +128,7 @@ public class Shop implements ShopServices {
     }
 
 
-    private BigDecimal subtractFromPrice(BigDecimal price, BigDecimal discount) {
+    public BigDecimal subtractFromPrice(BigDecimal price, BigDecimal discount) {
         BigDecimal percent = discount.divide(BigDecimal.valueOf(100));
         return price.subtract(price.multiply(percent));
     }
@@ -179,7 +179,7 @@ public class Shop implements ShopServices {
         List<Checkouts> generatedCheckouts = new ArrayList<>();
         for (int i = 0; i < amount; i++) {
             UID uid = new UID(); // Generate a random UID
-            Checkouts checkout = new Checkouts(uid); // Create a new Checkout object with the generated UID
+            Checkouts checkout = new Checkouts(); // Create a new Checkout object with the generated UID
             shop.addCheckoutToSet(checkout);
             generatedCheckouts.add(checkout); // Add the generated Checkout to the list
         }
@@ -238,7 +238,7 @@ public class Shop implements ShopServices {
         }
     }
 
-//    public Goods findGoodsByName(String goodsName) {
+    //    public Goods findGoodsByName(String goodsName) {
 //        for (Goods goods : storeGoods) {
 //            if (goods.getName().equalsIgnoreCase(goodsName)) {
 //                return goods;

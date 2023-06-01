@@ -13,7 +13,7 @@ public interface CheckoutServices {
     void sellGoods(Shop shop, BigDecimal balance, HashMap<String, Integer> shoppingList, Checkouts checkouts, Cashiers cashiers);
     BigDecimal scanGoods(Shop shop, BigDecimal balance, HashMap<String, Integer> shoppingList);
     void checkGoodsAvailability(Shop shop, String goodsName, int requestedQuantity);
-    void checkGoodExpiryDate(Goods goods, Shop shop); //to check expiry date and apply discount
+    BigDecimal checkGoodExpiryDate(Goods goods, Shop shop, BigDecimal totalValue); //to check expiry date and apply discount
     void checkCustomersBalance(BigDecimal balance, BigDecimal totalSum);
     void updateStoreGoods(Shop shop, HashMap<String, Integer> shoppingList);
     Receipt createReceipt(HashMap<String, Integer> shoppingList, Shop shop, Checkouts checkouts, Cashiers cashiers, BigDecimal totalValue);

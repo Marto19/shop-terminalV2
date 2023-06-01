@@ -19,12 +19,12 @@ public class Receipt implements Serializable {
     private Set<Goods> shoppedGoods;
     private BigDecimal totalAmount;
 
-    public Receipt(Cashiers cashier, Checkouts checkouts, Set<Goods> shoppedGoods, BigDecimal totalAmount) {
+    public Receipt(Cashiers cashier, Checkouts checkouts, Set<Goods> shoppedGoods, BigDecimal totalAmount){
         this.serialNumber = serialNumber++;
         this.cashier = cashier;
         this.checkouts = checkouts;
         this.issueDateTime = LocalDateTime.now();
-        this.shoppedGoods = new HashSet<>();
+        this.shoppedGoods = shoppedGoods;
         this.totalAmount = totalAmount;
     }
 

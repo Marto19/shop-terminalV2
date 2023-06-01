@@ -1,11 +1,12 @@
 package org.example.shop.goods;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.rmi.server.UID;
 import java.time.LocalDate;
 import java.util.UUID;
 
-public class Goods {
+public class Goods implements Serializable {
     private UUID uuid;
     private String name;
     private BigDecimal unitShippingCost;
