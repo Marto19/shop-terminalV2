@@ -36,6 +36,7 @@ public class Main {
             System.out.println("7. Buy stuff");
             System.out.println("8. Calculate cashier expenses");
             System.out.println("9. Calculate shop's income");
+            System.out.println("10. Print store's sold goods");
             System.out.println("Enter 'exit' to quit");
             input = scanner.nextLine();
 
@@ -234,6 +235,8 @@ public class Main {
                     }
                 case "9":
                     System.out.println("Shop's income is: " + shop.calculateIncome());
+                case "10":
+                    shop.printSoldGoods();
             }
         }
     }
@@ -243,7 +246,9 @@ public class Main {
 /*
 - THE METHOD IS GOING TO TAKE AS A PARAMETER GOODS LIST, ONE GOOD OR GOODS WITH SPACES AND THE QUANTITY
 
-TODO: check why the shopping list is empty and the total value 0
-TODO: fix the calculation of the markup properly
-TODO: actually check the expiration date when an item is sold(in checkout). and apply markup
+TODO: check why the shopping list is empty and the total value 0 -fixed
+TODO: fix the calculation of the markup properly- fixed
+TODO: actually check the expiration date when an item is sold(in checkout). and apply markup- fixed
+TODO: the income to be calculated properly and the to display sold items set
+TODO: fix the calculateIncome method
 * */

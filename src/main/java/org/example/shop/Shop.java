@@ -332,13 +332,20 @@ public class Shop implements ShopServices {
 
     //---------------------------method to calculate the shops income---------------------------------
     public BigDecimal calculateIncome() {
-        if (soldItems == null || soldItems.isEmpty()) {
+        if (soldItems.isEmpty()) {
             handleNoSoldItems();
         }
-        return soldItems.stream()
-                .map(Goods::getFinalPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal totalIncome = BigDecimal.ZERO;
+        for (Goods goods : soldItems) {
+            BigDecimal sellingPrice = calculateGoodsSellingPrice(goods, expiryDiscount);
+            totalIncome = totalIncome.add(sellingPrice);
+        }
+
+        return totalIncome;
     }
+
+
 
     public void handleNoSoldItems(){
         try {
