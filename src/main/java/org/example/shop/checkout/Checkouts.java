@@ -186,17 +186,24 @@ public class Checkouts implements CheckoutServices, Serializable{
                 if (updatedQuantity >= 0) {
                     // Update the quantity in storeGoods
                     selectedGoods.setQuantity(updatedQuantity);
-                    // Add the sold items to the soldItems set
-                    SoldGoods soldGoods = new SoldGoods(
-                            selectedGoods.getUuid(),
-                            selectedGoods.getName(),
-                            selectedGoods.getUnitShippingCost(),
-                            selectedGoods.getGoodsType(),
-                            selectedGoods.getExpiryDate(),
-                            purchasedQuantity,
-                            selectedGoods.getFinalPrice()
-                    );
-                    shop.getSoldItems().add(soldGoods);
+                    // Add the sold items to the soldItems set or update the quantity if already present
+                    SoldGoods existingSoldGoods = findSoldGoodsByName(shop.getSoldItems(), goodsName);
+
+                    if (existingSoldGoods != null) {
+                        int soldQuantity = existingSoldGoods.getQuantity();
+                        existingSoldGoods.setQuantity(soldQuantity + purchasedQuantity);
+                    } else {
+                        SoldGoods soldGoods = new SoldGoods(
+                                selectedGoods.getName(),
+                                selectedGoods.getUnitShippingCost(),
+                                selectedGoods.getGoodsType(),
+                                selectedGoods.getExpiryDate(),
+                                purchasedQuantity,
+                                selectedGoods.getFinalPrice()
+                        );
+                        shop.getSoldItems().add(soldGoods);
+                    }
+
                     System.out.println(purchasedQuantity + " " + goodsName + " updated in the store.");
                 } else {
                     handleNotEnoughtQuantity(purchasedQuantity, selectedGoods, shop);
@@ -205,6 +212,15 @@ public class Checkouts implements CheckoutServices, Serializable{
                 handleNameException();
             }
         }
+    }
+
+    private SoldGoods findSoldGoodsByName(Set<SoldGoods> soldItems, String goodsName) {
+        for (SoldGoods soldGoods : soldItems) {
+            if (soldGoods.getName().equals(goodsName)) {
+                return soldGoods;
+            }
+        }
+        return null;
     }
 
     @Override

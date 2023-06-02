@@ -7,6 +7,7 @@ import org.example.shop.exceptions.ExpiryDateException;
 import org.example.shop.exceptions.NoSoldItems;
 import org.example.shop.goods.Goods;
 import org.example.shop.goods.GoodsType;
+import org.example.shop.goods.SoldGoods;
 import org.example.shop.services.ShopServices;
 
 import java.math.BigDecimal;
@@ -25,7 +26,7 @@ public class Shop implements ShopServices {
     private Set<Cashiers> cashiersSet;
     private Set<Goods> storeGoods;
     private Set<Checkouts> checkoutsSet;
-    private Set<Goods> soldItems;
+    private Set<SoldGoods> soldItems;
     private Set<Receipt> receiptSet;
     private int numberOfReceipt = 0;
 
@@ -75,7 +76,7 @@ public class Shop implements ShopServices {
         return checkoutsSet;
     }
 
-    public Set<Goods> getSoldItems() {
+    public Set<SoldGoods> getSoldItems() {
         return soldItems;
     }
 
@@ -155,7 +156,7 @@ public class Shop implements ShopServices {
     }
 
     //--------------------------------------add to sold item set--------------------------------------------------
-    public void addGoodToSoldSet(Goods goods){
+    public void addGoodToSoldSet(SoldGoods goods){
         soldItems.add(goods);
     }
     //-----------------------------------assign cashiers to checkouts in a hashmap---------------------
@@ -189,54 +190,54 @@ public class Shop implements ShopServices {
 
     //----------------------------------sell goods from store-------------------------------------------
 
-    public void sellGoods(Shop shop) {
-        //if we choose a checkout to go we can try to
-        //take the cashier and checkout to use the
-        //markGoods and scanGoods from the different classes
-        Random random = new Random();
-        int balance = random.nextInt(101); // Generate a random balance between 0 and 100
-        System.out.println("Your balance: " + balance);
-        //IZNASQNE W CHECKOUT, IZPOLZWANE TAM NA CASHIER I SHOP
-        Scanner scanner = new Scanner(System.in);
-        String input = "";
-        while (!input.equalsIgnoreCase("stop")) {
-            System.out.println("What do you want to buy?");
-            shop.printStoreGoods();
-            System.out.print("Enter name: ");
-            String goodsName = scanner.nextLine();
-            // Find the goods by name
-            Goods selectedGoods = shop.findGoodsByName(goodsName);
-            if (selectedGoods == null) {
-                System.out.println("Invalid goods name. Please try again.");
-                continue;
-            }
-            System.out.print("Enter quantity: ");
-            int quantity = scanner.nextInt();
-            scanner.nextLine(); // Consume newline character
-            // Check if there are enough goods in the store
-            if (quantity > selectedGoods.getQuantity()) {
-                System.out.println("Insufficient quantity. Please try again.");
-                continue;
-            }
-            // Check if the balance is sufficient -DO TUK SME
-            BigDecimal totalPrice = selectedGoods.getFinalPrice().multiply(BigDecimal.valueOf(quantity));
-            if (totalPrice.compareTo(BigDecimal.valueOf(balance)) > 0) {
-                System.out.println("Insufficient balance. Please try again.");
-                continue;
-            }
-            // Sell the goods and update the quantity-TOWA TRQBWA DA NAPRAVIM
-            selectedGoods.setQuantity(selectedGoods.getQuantity() - quantity);
-            shop.getSoldItems().add(selectedGoods);
-            System.out.println(quantity + " " + selectedGoods.getName() + " sold.");
-            shop.printStoreGoods();
-            shop.addGoodToSoldSet(selectedGoods);
-            shop.printSoldGoods();
-            balance -= totalPrice.intValue(); // Deduct the total price from the balance
-            System.out.println("Remaining balance: " + balance);
-            System.out.print("Enter 'stop' to finish or any key to continue buying: ");
-            input = scanner.nextLine();
-        }
-    }
+//    public void sellGoods(Shop shop) {
+//        //if we choose a checkout to go we can try to
+//        //take the cashier and checkout to use the
+//        //markGoods and scanGoods from the different classes
+//        Random random = new Random();
+//        int balance = random.nextInt(101); // Generate a random balance between 0 and 100
+//        System.out.println("Your balance: " + balance);
+//        //IZNASQNE W CHECKOUT, IZPOLZWANE TAM NA CASHIER I SHOP
+//        Scanner scanner = new Scanner(System.in);
+//        String input = "";
+//        while (!input.equalsIgnoreCase("stop")) {
+//            System.out.println("What do you want to buy?");
+//            shop.printStoreGoods();
+//            System.out.print("Enter name: ");
+//            String goodsName = scanner.nextLine();
+//            // Find the goods by name
+//            Goods selectedGoods = shop.findGoodsByName(goodsName);
+//            if (selectedGoods == null) {
+//                System.out.println("Invalid goods name. Please try again.");
+//                continue;
+//            }
+//            System.out.print("Enter quantity: ");
+//            int quantity = scanner.nextInt();
+//            scanner.nextLine(); // Consume newline character
+//            // Check if there are enough goods in the store
+//            if (quantity > selectedGoods.getQuantity()) {
+//                System.out.println("Insufficient quantity. Please try again.");
+//                continue;
+//            }
+//            // Check if the balance is sufficient -DO TUK SME
+//            BigDecimal totalPrice = selectedGoods.getFinalPrice().multiply(BigDecimal.valueOf(quantity));
+//            if (totalPrice.compareTo(BigDecimal.valueOf(balance)) > 0) {
+//                System.out.println("Insufficient balance. Please try again.");
+//                continue;
+//            }
+//            // Sell the goods and update the quantity-TOWA TRQBWA DA NAPRAVIM
+//            selectedGoods.setQuantity(selectedGoods.getQuantity() - quantity);
+//            shop.getSoldItems().add(selectedGoods);
+//            System.out.println(quantity + " " + selectedGoods.getName() + " sold.");
+//            shop.printStoreGoods();
+//            shop.addGoodToSoldSet(selectedGoods);
+//            shop.printSoldGoods();
+//            balance -= totalPrice.intValue(); // Deduct the total price from the balance
+//            System.out.println("Remaining balance: " + balance);
+//            System.out.print("Enter 'stop' to finish or any key to continue buying: ");
+//            input = scanner.nextLine();
+//        }
+//    }
 
     //    public Goods findGoodsByName(String goodsName) {
 //        for (Goods goods : storeGoods) {
@@ -337,14 +338,13 @@ public class Shop implements ShopServices {
         }
 
         BigDecimal totalIncome = BigDecimal.ZERO;
-        for (Goods goods : soldItems) {
-            BigDecimal sellingPrice = calculateGoodsSellingPrice(goods, expiryDiscount);
-            totalIncome = totalIncome.add(sellingPrice);
+        for (SoldGoods soldGoods : soldItems) {
+            BigDecimal itemIncome = soldGoods.getFinalPrice().multiply(BigDecimal.valueOf(soldGoods.getQuantity()));
+            totalIncome = totalIncome.add(itemIncome);
         }
 
         return totalIncome;
     }
-
 
 
     public void handleNoSoldItems(){
@@ -369,18 +369,7 @@ public class Shop implements ShopServices {
         }
     }
     //--------------------------------------printing the checkout cashiers map-------------------------
-//    public void printCheckoutsCashiersMap() {
-//        if (checkoutsCashiersMap.isEmpty()) {
-//            System.out.println("No cashiers assigned to checkouts.");
-//        } else {
-//            System.out.println("Checkouts - Cashiers Map:");
-//            for (Map.Entry<Checkouts, Cashiers> entry : checkoutsCashiersMap.entrySet()) {
-//                Checkouts checkout = entry.getKey();
-//                Cashiers cashier = entry.getValue();
-//                System.out.println("Checkout: " + checkout + ", Cashier: " + cashier);
-//            }
-//        }
-//    }
+
     public void printCheckoutsCashiersMap() {
         if (checkoutsCashiersMap.isEmpty()) {
             System.out.println("No cashiers assigned to checkouts.");
@@ -403,6 +392,7 @@ public class Shop implements ShopServices {
             System.out.println(goods);
         }
     }
+
 
     @Override
     public String toString() {

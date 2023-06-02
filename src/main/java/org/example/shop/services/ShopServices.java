@@ -11,7 +11,7 @@ import java.util.Set;
 public interface ShopServices {
     BigDecimal calculateGoodsSellingPrice(Goods goods, BigDecimal expiryDiscount);
 
-    void sellGoods(Shop shop);
+    //void sellGoods(Shop shop);
     void assignCashierToChekout(Set<Checkouts> checkoutsSet, Set<Cashiers> cashiersSet);
     BigDecimal calculateCashierExpenses();
 }
