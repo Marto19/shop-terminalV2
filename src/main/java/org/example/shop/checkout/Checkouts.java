@@ -239,7 +239,6 @@ public class Checkouts implements CheckoutServices, Serializable{
 
         String filePath = "receipt" + shop.getNumberOfReceipt() + ".ser"; // Generate the filename with the receiptCounter value
         ReceiptSerializer.serializeReceipt(receipt, filePath);
-
         shop.setNumberOfReceipt(shop.getNumberOfReceipt() + 1); // Increment the receiptCounter
 
         return receipt;

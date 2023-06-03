@@ -14,4 +14,5 @@ public interface ShopServices {
     //void sellGoods(Shop shop);
     void assignCashierToChekout(Set<Checkouts> checkoutsSet, Set<Cashiers> cashiersSet);
     BigDecimal calculateCashierExpenses();
+    BigDecimal shopInventarExpenses();
 }

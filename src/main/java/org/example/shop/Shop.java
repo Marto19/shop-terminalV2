@@ -140,13 +140,6 @@ public class Shop implements ShopServices {
         return price.subtract(price.multiply(percent));
     }
 
-    private void handleExpiryProduct(){
-        try {
-            throw new ExpiryDateException("This product has expired.");
-        } catch (ExpiryDateException e) {
-            throw new RuntimeException(e);
-        }
-    }
     //-----------------------------------add cashiers to set-------------------------------------------
     public void addCashierToSet(Cashiers cashier) {
         cashiersSet.add(cashier);
@@ -245,16 +238,23 @@ public class Shop implements ShopServices {
         if (soldItems.isEmpty()) {
             handleNoSoldItems();
         }
-
         BigDecimal totalIncome = BigDecimal.ZERO;
         for (SoldGoods soldGoods : soldItems) {
             BigDecimal itemIncome = soldGoods.getFinalPrice().multiply(BigDecimal.valueOf(soldGoods.getQuantity()));
             totalIncome = totalIncome.add(itemIncome);
         }
-
         return totalIncome;
     }
 
+    //------------------------------method to calculate shops inventar expenses----------------------------
+
+
+    @Override
+    public BigDecimal shopInventarExpenses() {
+        return getStoreGoods().stream()
+                .map(goods -> goods.getFinalPrice().multiply(BigDecimal.valueOf(goods.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
 
     public void handleNoSoldItems(){
         try {

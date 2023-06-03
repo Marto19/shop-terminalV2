@@ -42,6 +42,8 @@ public class Main {
             System.out.println("10. Print store's sold goods");
             System.out.println("11. Deserialize .ser file");
             System.out.println("12. Print shop");
+            System.out.println("13. Print number of receipts");
+            System.out.println("14. Print shop goods expenses");
             System.out.println("Enter 'exit' to quit");
             input = scanner.nextLine();
 
@@ -280,6 +282,10 @@ public class Main {
                     }
                 case "12":
                     System.out.println(shop);
+                case "13":
+                    System.out.println("Shop number of receipts: " + shop.getNumberOfReceipt());
+                case "14":
+                    System.out.println("Shop goods expenses: " + shop.shopInventarExpenses());
             }
         }
     }
@@ -297,7 +303,6 @@ public class Main {
                 }
             }
         }
-
         return serFiles;
     }
 
