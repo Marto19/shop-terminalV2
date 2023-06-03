@@ -18,6 +18,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Shop implements ShopServices {
+    private UUID shopUuid;
     private Map<GoodsType, BigDecimal> markup;
     private int daysUntilExpiryDiscountApplied;
     private BigDecimal expiryDiscount;
@@ -32,6 +33,7 @@ public class Shop implements ShopServices {
 
 
     public Shop(BigDecimal foodMarkup, BigDecimal nonFoodMarkup, int daysUntilExpiryDiscount, BigDecimal expiryDiscount, int numberOfCheckouts) {
+        this.shopUuid = UUID.randomUUID();
         markup = new EnumMap<GoodsType, BigDecimal>(GoodsType.class);
         markup.put(GoodsType.FOOD, foodMarkup);
         markup.put(GoodsType.NONFOOD, nonFoodMarkup);
@@ -96,6 +98,10 @@ public class Shop implements ShopServices {
         this.numberOfReceipt = numberOfReceipt;
     }
 
+    public UUID getShopUuid() {
+        return shopUuid;
+    }
+
     //-----------------------------------calculate goods selling price method--------------------------
     @Override
     public BigDecimal calculateGoodsSellingPrice(Goods goods, BigDecimal expiryDiscount) {//shop.getExpiryDiscount()
@@ -155,10 +161,6 @@ public class Shop implements ShopServices {
         storeGoods.add(goods);
     }
 
-    //--------------------------------------add to sold item set--------------------------------------------------
-    public void addGoodToSoldSet(SoldGoods goods){
-        soldItems.add(goods);
-    }
     //-----------------------------------assign cashiers to checkouts in a hashmap---------------------
 
     @Override
@@ -188,105 +190,12 @@ public class Shop implements ShopServices {
         return generatedCheckouts;
     }
 
-    //----------------------------------sell goods from store-------------------------------------------
-
-//    public void sellGoods(Shop shop) {
-//        //if we choose a checkout to go we can try to
-//        //take the cashier and checkout to use the
-//        //markGoods and scanGoods from the different classes
-//        Random random = new Random();
-//        int balance = random.nextInt(101); // Generate a random balance between 0 and 100
-//        System.out.println("Your balance: " + balance);
-//        //IZNASQNE W CHECKOUT, IZPOLZWANE TAM NA CASHIER I SHOP
-//        Scanner scanner = new Scanner(System.in);
-//        String input = "";
-//        while (!input.equalsIgnoreCase("stop")) {
-//            System.out.println("What do you want to buy?");
-//            shop.printStoreGoods();
-//            System.out.print("Enter name: ");
-//            String goodsName = scanner.nextLine();
-//            // Find the goods by name
-//            Goods selectedGoods = shop.findGoodsByName(goodsName);
-//            if (selectedGoods == null) {
-//                System.out.println("Invalid goods name. Please try again.");
-//                continue;
-//            }
-//            System.out.print("Enter quantity: ");
-//            int quantity = scanner.nextInt();
-//            scanner.nextLine(); // Consume newline character
-//            // Check if there are enough goods in the store
-//            if (quantity > selectedGoods.getQuantity()) {
-//                System.out.println("Insufficient quantity. Please try again.");
-//                continue;
-//            }
-//            // Check if the balance is sufficient -DO TUK SME
-//            BigDecimal totalPrice = selectedGoods.getFinalPrice().multiply(BigDecimal.valueOf(quantity));
-//            if (totalPrice.compareTo(BigDecimal.valueOf(balance)) > 0) {
-//                System.out.println("Insufficient balance. Please try again.");
-//                continue;
-//            }
-//            // Sell the goods and update the quantity-TOWA TRQBWA DA NAPRAVIM
-//            selectedGoods.setQuantity(selectedGoods.getQuantity() - quantity);
-//            shop.getSoldItems().add(selectedGoods);
-//            System.out.println(quantity + " " + selectedGoods.getName() + " sold.");
-//            shop.printStoreGoods();
-//            shop.addGoodToSoldSet(selectedGoods);
-//            shop.printSoldGoods();
-//            balance -= totalPrice.intValue(); // Deduct the total price from the balance
-//            System.out.println("Remaining balance: " + balance);
-//            System.out.print("Enter 'stop' to finish or any key to continue buying: ");
-//            input = scanner.nextLine();
-//        }
-//    }
-
-    //    public Goods findGoodsByName(String goodsName) {
-//        for (Goods goods : storeGoods) {
-//            if (goods.getName().equalsIgnoreCase(goodsName)) {
-//                return goods;
-//            }
-//        }
-//        return null;
-//    }
     public Goods findGoodsByName(String goodsName) {
         return getStoreGoods().stream()
                 .filter(goods -> goods.getName().equalsIgnoreCase(goodsName))
                 .findFirst()
                 .orElse(null);
     }
-
-
-
-
-    //----------------choose checkout method----------------------------
-
-//    public Map.Entry<Checkouts, Cashiers> chooseCheckoutWithCashier() {
-//        List<Map.Entry<Checkouts, Cashiers>> checkoutsWithCashiers = new ArrayList<>();
-//        for (Map.Entry<Checkouts, Cashiers> entry : checkoutsCashiersMap.entrySet()) {
-//            Checkouts checkout = entry.getKey();
-//            Cashiers cashier = entry.getValue();
-//            if (cashier != null) {
-//                checkoutsWithCashiers.add(entry);
-//            }
-//        }
-//        if (checkoutsWithCashiers.isEmpty()) {
-//            System.out.println("No checkouts with assigned cashiers.");
-//            return null;
-//        }
-//        Scanner scanner = new Scanner(System.in);
-//        System.out.println("Checkouts with Assigned Cashiers:");
-//        for (int i = 0; i < checkoutsWithCashiers.size(); i++) {
-//            System.out.println((i + 1) + ": " + checkoutsWithCashiers.get(i).getKey());
-//        }
-//        System.out.print("Choose a checkout (1-" + checkoutsWithCashiers.size() + "): ");
-//        int choice = scanner.nextInt();
-//        scanner.nextLine(); // Consume newline character
-//        if (choice < 1 || choice > checkoutsWithCashiers.size()) {
-//            System.out.println("Invalid choice. Please try again.");
-//            return null;
-//        }
-//        return checkoutsWithCashiers.get(choice - 1);
-//    }
-
 
     private List<Map.Entry<Checkouts, Cashiers>> filterCheckoutsWithAssignedCashiers() {
         return checkoutsCashiersMap.entrySet().stream()
@@ -397,6 +306,7 @@ public class Shop implements ShopServices {
     @Override
     public String toString() {
         return "Shop{" +
+                "shopUuid=" + shopUuid +
                 "storeGoods=" + storeGoods +
                 ", markup=" + markup +
                 ", daysUntilExpiryDiscountApplied=" + daysUntilExpiryDiscountApplied +
