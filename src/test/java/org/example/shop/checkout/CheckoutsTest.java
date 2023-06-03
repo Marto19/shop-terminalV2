@@ -52,6 +52,22 @@ class CheckoutsTest {
         assertThrows(ExpiryDateException.class, () -> checkouts.checkGoodExpiryDate(goods, shop, totalValue));
     }
 
+    @Test
+    public void testCheckCustomersBalance_WhenSufficientBalance() {
+        BigDecimal balance = BigDecimal.valueOf(100.0);
+        BigDecimal totalSum = BigDecimal.valueOf(50.0);
+
+        assertDoesNotThrow(() -> checkouts.checkCustomersBalance(balance, totalSum));
+    }
+
+    @Test
+    public void testCheckCustomersBalance_WhenInsufficientBalance() {
+        BigDecimal balance = BigDecimal.valueOf(50.0);
+        BigDecimal totalSum = BigDecimal.valueOf(100.0);
+
+        assertThrows(InsufficientBalance.class, () -> checkouts.checkCustomersBalance(balance, totalSum));
+    }
+
 
 
 }
