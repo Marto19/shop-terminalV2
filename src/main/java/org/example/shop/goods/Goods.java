@@ -72,6 +72,9 @@ public class Goods implements Serializable {
         this.quantity = quantity;
     }
 
+    public void setExpiryDate(LocalDate expiryDate) {
+        this.expiryDate = expiryDate;
+    }
 
     @Override
     public String toString() {
