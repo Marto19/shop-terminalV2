@@ -240,10 +240,13 @@ public class Main {
                     else {
                         System.out.println("Cashier's expenses: " + shop.calculateCashierExpenses());
                     }
+                    break;
                 case "9":
                     System.out.println("Shop's income is: " + shop.calculateIncome());
+                    break;
                 case "10":
                     shop.printSoldGoods();
+                    break;
                 case "11":
                     // Step 1: Get the directory path where the .ser files are located
                     System.out.print("Enter the directory path where the .ser files are located: ");
@@ -280,12 +283,21 @@ public class Main {
                     } else {
                         System.out.println("Invalid file number.");
                     }
+                    break;
                 case "12":
                     System.out.println(shop);
+                    break;
                 case "13":
                     System.out.println("Shop number of receipts: " + shop.getNumberOfReceipt());
+                    break;
                 case "14":
-                    System.out.println("Shop goods expenses: " + shop.shopInventarExpenses());
+                    if (shop.getStoreGoods() == null){
+                        System.out.println("First add goods to the store");
+                    }
+                    else {
+                        System.out.println("Shop goods expenses: " + shop.shopInventarExpenses());
+                    }
+                    break;
             }
         }
     }
