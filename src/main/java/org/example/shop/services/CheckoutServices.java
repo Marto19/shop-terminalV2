@@ -18,6 +18,6 @@ public interface CheckoutServices {
     void updateStoreGoods(Shop shop, HashMap<String, Integer> shoppingList);
     Receipt createReceipt(HashMap<String, Integer> shoppingList, Shop shop, Checkouts checkouts, Cashiers cashiers, BigDecimal totalValue);
 
-    void serializeReceipt(Receipt receipt, String filePath);
-    Receipt deserializeReceipt(String filePath);
+    //void serializeReceipt(Receipt receipt, String filePath);
+    //Receipt deserializeReceipt(String filePath);
 }

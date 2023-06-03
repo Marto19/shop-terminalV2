@@ -1,6 +1,7 @@
 package org.example.shop.checkout;
 
 import org.example.shop.Cashiers;
+import org.example.shop.deSerialization.ReceiptSerializer;
 import org.example.shop.Shop;
 import org.example.shop.exceptions.ExpiryDateException;
 import org.example.shop.exceptions.InsufficientBalance;
@@ -13,7 +14,6 @@ import org.example.shop.services.CheckoutServices;
 
 import java.io.*;
 import java.math.BigDecimal;
-import java.rmi.server.UID;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -238,7 +238,7 @@ public class Checkouts implements CheckoutServices, Serializable{
         shop.getReceiptSet().add(receipt);
 
         String filePath = "receipt" + shop.getNumberOfReceipt() + ".ser"; // Generate the filename with the receiptCounter value
-        serializeReceipt(receipt, filePath);
+        ReceiptSerializer.serializeReceipt(receipt, filePath);
 
         shop.setNumberOfReceipt(shop.getNumberOfReceipt() + 1); // Increment the receiptCounter
 
@@ -248,33 +248,33 @@ public class Checkouts implements CheckoutServices, Serializable{
     //fix this:Receipt{...., shoppedGoods=[], totalAmount=0}
 
 
-    @Override
-    public void serializeReceipt(Receipt receipt, String filePath) {
-        try {
-            FileOutputStream fileOut = new FileOutputStream(filePath);
-            ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
-            objectOut.writeObject(receipt);
-            objectOut.close();
-            fileOut.close();
-            System.out.println("Receipt serialized and saved to: " + filePath);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    @Override
+//    public void serializeReceipt(Receipt receipt, String filePath) {
+//        try {
+//            FileOutputStream fileOut = new FileOutputStream(filePath);
+//            ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
+//            objectOut.writeObject(receipt);
+//            objectOut.close();
+//            fileOut.close();
+//            System.out.println("Receipt serialized and saved to: " + filePath);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
-    @Override
-    public Receipt deserializeReceipt(String filePath) {
-        Receipt receipt = null;
-        try {
-            FileInputStream fileIn = new FileInputStream(filePath);
-            ObjectInputStream objectIn = new ObjectInputStream(fileIn);
-            receipt = (Receipt) objectIn.readObject();
-            objectIn.close();
-            fileIn.close();
-            System.out.println("Receipt deserialized from: " + filePath);
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return receipt;
-    }
+//    @Override
+//    public Receipt deserializeReceipt(String filePath) {
+//        Receipt receipt = null;
+//        try {
+//            FileInputStream fileIn = new FileInputStream(filePath);
+//            ObjectInputStream objectIn = new ObjectInputStream(fileIn);
+//            receipt = (Receipt) objectIn.readObject();
+//            objectIn.close();
+//            fileIn.close();
+//            System.out.println("Receipt deserialized from: " + filePath);
+//        } catch (IOException | ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        return receipt;
+//    }
 }

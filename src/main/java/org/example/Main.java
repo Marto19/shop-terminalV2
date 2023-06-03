@@ -3,9 +3,12 @@ package org.example;
 import org.example.shop.Cashiers;
 import org.example.shop.Shop;
 import org.example.shop.checkout.Checkouts;
+import org.example.shop.checkout.Receipt;
+import org.example.shop.deSerialization.ReceiptDeserialization;
 import org.example.shop.goods.Goods;
 import org.example.shop.goods.GoodsType;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.rmi.server.UID;
@@ -37,6 +40,7 @@ public class Main {
             System.out.println("8. Calculate cashier expenses");
             System.out.println("9. Calculate shop's income");
             System.out.println("10. Print store's sold goods");
+            System.out.println("11. Deserialize .ser file");
             System.out.println("Enter 'exit' to quit");
             input = scanner.nextLine();
 
@@ -237,8 +241,61 @@ public class Main {
                     System.out.println("Shop's income is: " + shop.calculateIncome());
                 case "10":
                     shop.printSoldGoods();
+                case "11":
+                    // Step 1: Get the directory path where the .ser files are located
+                    System.out.print("Enter the directory path where the .ser files are located: ");
+                    String directoryPath = scanner.nextLine();
+
+                    // Step 2: List all .ser files in the directory
+                    List<File> serFiles = listSerFiles(directoryPath);
+
+                    if (serFiles.isEmpty()) {
+                        System.out.println("No .ser files found in the directory.");
+                        return;
+                    }
+
+                    // Step 3: Prompt the user to choose a file
+                    System.out.println("Choose a file to deserialize:");
+                    for (int i = 0; i < serFiles.size(); i++) {
+                        System.out.println((i + 1) + ". " + serFiles.get(i).getName());
+                    }
+                    System.out.print("Enter the file number: ");
+                    int fileNumber = scanner.nextInt();
+                    scanner.nextLine(); // Consume the newline character
+
+                    // Step 4: Deserialize the selected receipt
+                    if (fileNumber >= 1 && fileNumber <= serFiles.size()) {
+                        File selectedFile = serFiles.get(fileNumber - 1);
+                        Receipt receipt = ReceiptDeserialization.deserializeReceipt(selectedFile.getAbsolutePath());
+
+                        if (receipt != null) {
+                            // Use the deserialized receipt as needed
+                            System.out.println("Deserialized receipt: " + receipt);
+                        } else {
+                            System.out.println("Failed to deserialize the receipt.");
+                        }
+                    } else {
+                        System.out.println("Invalid file number.");
+                    }
             }
         }
+    }
+    private static List<File> listSerFiles(String directoryPath) {
+        List<File> serFiles = new ArrayList<>();
+        File directory = new File(directoryPath);
+
+        if (directory.exists() && directory.isDirectory()) {
+            File[] files = directory.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile() && file.getName().endsWith(".ser")) {
+                        serFiles.add(file);
+                    }
+                }
+            }
+        }
+
+        return serFiles;
     }
 
 }
