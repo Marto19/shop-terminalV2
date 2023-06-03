@@ -1,6 +1,8 @@
 package org.example.shop.checkout;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.example.Customer;
 import org.example.shop.Cashiers;
 import org.example.shop.Shop;
 import org.example.shop.exceptions.ExpiryDateException;
@@ -17,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.UUID;
 
 import static org.mockito.Mockito.*;
 
@@ -67,7 +70,5 @@ class CheckoutsTest {
 
         assertThrows(InsufficientBalance.class, () -> checkouts.checkCustomersBalance(balance, totalSum));
     }
-
-
 
 }

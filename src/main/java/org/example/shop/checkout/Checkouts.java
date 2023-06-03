@@ -243,7 +243,6 @@ public class Checkouts implements CheckoutServices, Serializable{
 
         return receipt;
     }
-
     //fix this:Receipt{...., shoppedGoods=[], totalAmount=0}
 
 
