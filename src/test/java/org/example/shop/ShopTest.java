@@ -1,8 +1,10 @@
 package org.example.shop;
 
 import org.example.shop.checkout.Checkouts;
+import org.example.shop.exceptions.NoSoldItems;
 import org.example.shop.goods.Goods;
 import org.example.shop.goods.GoodsType;
+import org.example.shop.goods.SoldGoods;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -307,13 +309,67 @@ class ShopTest {
 
     @Test
     void calculateIncome() {
+        // Create a list of sold goods
+        Set<SoldGoods> soldItems = new HashSet<>();
+        soldItems.add(new SoldGoods("Apple", BigDecimal.valueOf(2.99), GoodsType.FOOD, LocalDate.now(), 5, BigDecimal.valueOf(14.95)));
+        soldItems.add(new SoldGoods("Banana", BigDecimal.valueOf(1.49), GoodsType.FOOD, LocalDate.now(), 3, BigDecimal.valueOf(4.47)));
+        soldItems.add(new SoldGoods("Orange", BigDecimal.valueOf(0.99), GoodsType.FOOD, LocalDate.now(), 10, BigDecimal.valueOf(9.90)));
+
+        // Set the sold items in the shop
+        shop.setSoldItems(soldItems);
+
+        // Call the method under test
+        BigDecimal totalIncome = shop.calculateIncome();
+
+        // Calculate the expected total income
+        BigDecimal expectedIncome = BigDecimal.ZERO;
+        for (SoldGoods soldGoods : soldItems) {
+            BigDecimal itemIncome = soldGoods.getFinalPrice().multiply(BigDecimal.valueOf(soldGoods.getQuantity()));
+            expectedIncome = expectedIncome.add(itemIncome);
+        }
+        // Assert the expected total income and the actual total income
+        assertEquals(expectedIncome, totalIncome);
     }
 
     @Test
     void shopInventarExpenses() {
+        // Create a list of store goods
+        Set<Goods> storeGoods = new HashSet<>();
+        storeGoods.add(new Goods("Apple", BigDecimal.valueOf(2.99), GoodsType.FOOD, LocalDate.now(), 10));
+        storeGoods.add(new Goods("Banana", BigDecimal.valueOf(1.49), GoodsType.FOOD, LocalDate.now(), 5));
+        storeGoods.add(new Goods("Orange", BigDecimal.valueOf(0.99), GoodsType.FOOD, LocalDate.now(), 8));
+
+        // Set the store goods in the shop
+        shop.setStoreGoods(storeGoods);
+
+        // Call the method under test
+        BigDecimal totalExpenses = shop.shopInventarExpenses();
+
+        // Calculate the expected total expenses
+        BigDecimal expectedExpenses = BigDecimal.ZERO;
+        for (Goods goods : storeGoods) {
+            BigDecimal finalPrice = goods.getFinalPrice();
+            if (finalPrice != null) {
+                BigDecimal itemExpenses = finalPrice.multiply(BigDecimal.valueOf(goods.getQuantity()));
+                expectedExpenses = expectedExpenses.add(itemExpenses);
+            }
+        }
+
+        // Assert the expected total expenses and the actual total expenses
+        assertEquals(expectedExpenses, totalExpenses);
     }
 
     @Test
-    void handleNoSoldItems() {
+    void handleNoSoldItemsInCalculateIncome() {
+        // Create a new shop instance
+        Shop shop = new Shop(BigDecimal.ZERO, BigDecimal.ZERO, 0, BigDecimal.ZERO, 0);
+
+        // Assert that the initial soldItems list is empty
+        assertTrue(shop.getSoldItems().isEmpty());
+
+        // Call calculateIncome() and assert that it throws an exception
+        assertThrows(RuntimeException.class, () -> {
+            BigDecimal income = shop.calculateIncome();
+        });
     }
 }

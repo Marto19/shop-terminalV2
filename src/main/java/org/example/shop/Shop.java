@@ -98,6 +98,14 @@ public class Shop implements ShopServices {
         this.numberOfReceipt = numberOfReceipt;
     }
 
+    public void setSoldItems(Set<SoldGoods> soldItems) {
+        this.soldItems = soldItems;
+    }
+
+    public void setStoreGoods(Set<Goods> storeGoods) {
+        this.storeGoods = storeGoods;
+    }
+
     public UUID getShopUuid() {
         return shopUuid;
     }
@@ -129,11 +137,6 @@ public class Shop implements ShopServices {
         applyMarkup(unitShippingCost, markup, goods);
 
         BigDecimal sellingPrice = unitShippingCost.add(markup);
-        // Apply expiry date discount if applicable
-//        if (daysUntilExpiry <= getDaysUntilExpiryDiscountApplied()) {
-//            sellingPrice = subtractFromPrice(sellingPrice, expiryDiscount);
-//        }
-//        goods.setFinalPrice(sellingPrice);//u was the problem
         return sellingPrice;
     }
 
@@ -259,7 +262,14 @@ public class Shop implements ShopServices {
     @Override
     public BigDecimal shopInventarExpenses() {
         return getStoreGoods().stream()
-                .map(goods -> goods.getFinalPrice().multiply(BigDecimal.valueOf(goods.getQuantity())))
+                .map(goods -> {
+                    BigDecimal finalPrice = goods.getFinalPrice();
+                    if (finalPrice != null) {
+                        return finalPrice.multiply(BigDecimal.valueOf(goods.getQuantity()));
+                    } else {
+                        return BigDecimal.ZERO;
+                    }
+                })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
