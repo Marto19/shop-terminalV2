@@ -21,6 +21,30 @@ import static org.mockito.Mockito.when;
 
 class ShopTest {
 
+    private Shop shop;
+    private Set<Checkouts> checkoutsSet;
+    private Set<Cashiers> cashiersSet;
+
+    @BeforeEach
+    void setUp() {
+        BigDecimal foodMarkup = BigDecimal.valueOf(10);
+        BigDecimal nonFoodMarkup = BigDecimal.valueOf(5);
+        int daysUntilExpiryDiscount = 5;
+        BigDecimal expiryDiscount = BigDecimal.valueOf(2);
+        int numberOfCheckouts = 3;
+        shop = new Shop(foodMarkup, nonFoodMarkup, daysUntilExpiryDiscount, expiryDiscount, numberOfCheckouts);
+
+        // Create checkouts and cashiers for the test
+        checkoutsSet = new HashSet<>();
+        checkoutsSet.add(new Checkouts());
+        checkoutsSet.add(new Checkouts());
+        checkoutsSet.add(new Checkouts());
+
+        cashiersSet = new HashSet<>();
+        cashiersSet.add(new Cashiers("Cashier 1", UUID.randomUUID(), BigDecimal.valueOf(1000)));
+        cashiersSet.add(new Cashiers("Cashier 2", UUID.randomUUID(), BigDecimal.valueOf(1500)));
+        cashiersSet.add(new Cashiers("Cashier 3", UUID.randomUUID(), BigDecimal.valueOf(2000)));
+    }
 
     @Mock
     private Goods goods;
@@ -157,30 +181,7 @@ class ShopTest {
         assertTrue(storeGoods.contains(goods));
     }
 
-    private Shop shop;
-    private Set<Checkouts> checkoutsSet;
-    private Set<Cashiers> cashiersSet;
 
-    @BeforeEach
-    void setUp() {
-        BigDecimal foodMarkup = BigDecimal.valueOf(10);
-        BigDecimal nonFoodMarkup = BigDecimal.valueOf(5);
-        int daysUntilExpiryDiscount = 5;
-        BigDecimal expiryDiscount = BigDecimal.valueOf(2);
-        int numberOfCheckouts = 3;
-        shop = new Shop(foodMarkup, nonFoodMarkup, daysUntilExpiryDiscount, expiryDiscount, numberOfCheckouts);
-
-        // Create checkouts and cashiers for the test
-        checkoutsSet = new HashSet<>();
-        checkoutsSet.add(new Checkouts());
-        checkoutsSet.add(new Checkouts());
-        checkoutsSet.add(new Checkouts());
-
-        cashiersSet = new HashSet<>();
-        cashiersSet.add(new Cashiers("Cashier 1", UUID.randomUUID(), BigDecimal.valueOf(1000)));
-        cashiersSet.add(new Cashiers("Cashier 2", UUID.randomUUID(), BigDecimal.valueOf(1500)));
-        cashiersSet.add(new Cashiers("Cashier 3", UUID.randomUUID(), BigDecimal.valueOf(2000)));
-    }
 
     @Test
     void assignCashierToCheckoutTest() {
@@ -197,6 +198,17 @@ class ShopTest {
 
     @Test
     void generateCheckouts() {
+        // Set up the desired amount of checkouts to generate
+        int amount = 3;
+        // Call the method under test
+        List<Checkouts> generatedCheckouts = shop.generateCheckouts(amount, shop);
+        // Verify the expected behavior
+        // Check that the correct number of checkouts was generated
+        assertEquals(amount, generatedCheckouts.size());
+        // Verify that each generated checkout has a non-null UUID
+        for (Checkouts generatedCheckout : generatedCheckouts) {
+            assertNotNull(generatedCheckout.getUuid());
+        }
     }
 
     @Test

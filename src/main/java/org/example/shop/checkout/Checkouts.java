@@ -23,7 +23,7 @@ public class Checkouts implements CheckoutServices, Serializable{
     public Checkouts() {
         this.uuid = UUID.randomUUID();
     }
-    public UUID getUid() {
+    public UUID getUuid() {
         return uuid;
     }
 

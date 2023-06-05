@@ -174,7 +174,6 @@ public class Shop implements ShopServices {
     public List<Checkouts> generateCheckouts(int amount, Shop shop) {
         List<Checkouts> generatedCheckouts = new ArrayList<>();
         for (int i = 0; i < amount; i++) {
-            UID uid = new UID(); // Generate a random UID
             Checkouts checkout = new Checkouts(); // Create a new Checkout object with the generated UID
             shop.addCheckoutToSet(checkout);
             generatedCheckouts.add(checkout); // Add the generated Checkout to the list
