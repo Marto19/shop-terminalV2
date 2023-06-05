@@ -10,14 +10,15 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class ShopTest {
 
@@ -44,6 +45,20 @@ class ShopTest {
         cashiersSet.add(new Cashiers("Cashier 1", UUID.randomUUID(), BigDecimal.valueOf(1000)));
         cashiersSet.add(new Cashiers("Cashier 2", UUID.randomUUID(), BigDecimal.valueOf(1500)));
         cashiersSet.add(new Cashiers("Cashier 3", UUID.randomUUID(), BigDecimal.valueOf(2000)));
+
+        MockitoAnnotations.openMocks(this); // Initialize the mock object
+
+        // Set up the mock behavior for the goods object
+        when(goods.getName()).thenReturn("Apple");
+
+        shop.setCheckoutsSet(checkoutsSet);
+        shop.setCashiersSet(cashiersSet);
+        shop.setCashiersSet(cashiersSet);
+        shop.setCashiersSet(cashiersSet);
+
+        Shop shop1 = new Shop(BigDecimal.ZERO, BigDecimal.ZERO, 0, BigDecimal.ZERO, 0);
+        cashiersSet = new HashSet<>();
+        shop1.setCashiersSet(cashiersSet);
     }
 
     @Mock
@@ -185,6 +200,19 @@ class ShopTest {
 
     @Test
     void assignCashierToCheckoutTest() {
+        // Create a new set of checkouts
+        Set<Checkouts> checkoutsSet = new HashSet<>();
+        checkoutsSet.add(new Checkouts());
+        checkoutsSet.add(new Checkouts());
+        checkoutsSet.add(new Checkouts());
+
+        // Create a new set of cashiers
+        Set<Cashiers> cashiersSet = new HashSet<>();
+        cashiersSet.add(new Cashiers("Cashier 4", UUID.randomUUID(), BigDecimal.valueOf(3000)));
+        cashiersSet.add(new Cashiers("Cashier 5", UUID.randomUUID(), BigDecimal.valueOf(4000)));
+        cashiersSet.add(new Cashiers("Cashier 6", UUID.randomUUID(), BigDecimal.valueOf(5000)));
+
+        // Call the method under test
         shop.assignCashierToChekout(checkoutsSet, cashiersSet);
 
         // Check if the checkouts are assigned to cashiers
@@ -213,14 +241,68 @@ class ShopTest {
 
     @Test
     void findGoodsByName() {
+        // Add the mocked goods to the store
+        shop.addGoodsToSet(goods);
+        // Set up the desired goods name to find
+        String goodsName = "Apple";
+        // Call the method under test
+        Goods foundGoods = shop.findGoodsByName(goodsName);
+        // Check that the foundGoods is not null
+        assertNotNull(foundGoods);
+        // Check that the foundGoods has the expected name (using the mocked goods object)
+        assertEquals(goodsName, foundGoods.getName());
     }
 
     @Test
     void chooseCheckoutWithCashier() {
+        // Capture the console output
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStream));
+
+        // Call the method under test
+        Map.Entry<Checkouts, Cashiers> result = shop.chooseCheckoutWithCashier();
+
+        // Verify that null is returned when there are no checkouts with assigned cashiers
+        assertNull(result);
+
+        // Verify that the appropriate message is printed
+        String consoleOutput = outputStream.toString();
+        assertTrue(consoleOutput.contains("No checkouts with assigned cashiers."));
     }
+
 
     @Test
     void calculateCashierExpenses() {
+        // Create mock Cashiers objects
+        Cashiers cashier1 = mock(Cashiers.class);
+        Cashiers cashier2 = mock(Cashiers.class);
+        Cashiers cashier3 = mock(Cashiers.class);
+
+        // Set up the monthly salaries for the mock cashiers
+        BigDecimal salary1 = BigDecimal.valueOf(1000);
+        BigDecimal salary2 = BigDecimal.valueOf(1500);
+        BigDecimal salary3 = BigDecimal.valueOf(2000);
+        when(cashier1.getMonthlySalary()).thenReturn(salary1);
+        when(cashier2.getMonthlySalary()).thenReturn(salary2);
+        when(cashier3.getMonthlySalary()).thenReturn(salary3);
+
+        // Create a new cashiers set and add the mock cashiers
+        Set<Cashiers> newCashiersSet = new HashSet<>();
+        newCashiersSet.add(cashier1);
+        newCashiersSet.add(cashier2);
+        newCashiersSet.add(cashier3);
+
+        // Assign the new cashiers set to the shop
+        shop.setCashiersSet(newCashiersSet);
+
+        // Calculate the expected total salary
+        BigDecimal expectedTotalSalary = salary1.add(salary2).add(salary3);
+
+        // Call the method under test
+        BigDecimal totalSalary = shop.calculateCashierExpenses();
+
+        // Assert the result
+        assertEquals(expectedTotalSalary, totalSalary);
     }
 
     @Test

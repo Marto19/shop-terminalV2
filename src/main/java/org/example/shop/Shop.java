@@ -102,6 +102,14 @@ public class Shop implements ShopServices {
         return shopUuid;
     }
 
+    public void setCashiersSet(Set<Cashiers> cashiersSet) {
+        this.cashiersSet = cashiersSet;
+    }
+
+    public void setCheckoutsSet(Set<Checkouts> checkoutsSet) {
+        this.checkoutsSet = checkoutsSet;
+    }
+
     //-----------------------------------calculate goods selling price method--------------------------
     @Override
     public BigDecimal calculateGoodsSellingPrice(Goods goods, BigDecimal expiryDiscount) {//shop.getExpiryDiscount()
