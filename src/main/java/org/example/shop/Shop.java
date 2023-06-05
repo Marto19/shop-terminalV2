@@ -129,7 +129,7 @@ public class Shop implements ShopServices {
         return sellingPrice;
     }
 
-    private void applyMarkup(BigDecimal cost, BigDecimal markup, Goods goods) {
+    protected void applyMarkup(BigDecimal cost, BigDecimal markup, Goods goods) {
         BigDecimal percent = markup.divide(BigDecimal.valueOf(100));
         goods.setFinalPrice(cost.add(cost.multiply(percent)));
     }

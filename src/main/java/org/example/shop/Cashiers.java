@@ -40,19 +40,6 @@ public class Cashiers implements CashierServices, Serializable {
                 '}';
     }
 
-//    @Override
-//    public void markGoods(Shop shop, Customer customer) {
-//        Scanner scanner = new Scanner(System.in);
-//        String input = "";
-//        while (!input.equalsIgnoreCase("stop")) {
-//            System.out.println("What do you want to buy?");
-//            shop.printStoreGoods();
-//            System.out.print("Enter name: ");
-//            String name = scanner.nextLine();
-//            System.out.print("Enter quantity: ");
-//            int quantity = scanner.nextInt();
-//        }
-//    }
 
     @Override
     public HashMap<String, Integer> markGoods(Shop shop, Customer customer) {
