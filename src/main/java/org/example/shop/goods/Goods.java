@@ -1,5 +1,7 @@
 package org.example.shop.goods;
 
+import org.example.shop.exceptions.FinalPriceNotReady;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.rmi.server.UID;
@@ -49,7 +51,19 @@ public class Goods implements Serializable {
     }
 
     public BigDecimal getFinalPrice() {
+        // Check if final price is null and handle it
+        handleFinalPriceNotReady();
         return finalPrice;
+    }
+
+    public void handleFinalPriceNotReady() {
+        if (finalPrice == null) {
+            try {
+                throw new FinalPriceNotReady("Final price is not available for this goods");
+            } catch (FinalPriceNotReady e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public void setFinalPrice(BigDecimal finalPrice) {

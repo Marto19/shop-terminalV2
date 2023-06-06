@@ -147,9 +147,16 @@ public class Shop implements ShopServices {
 
 
     public BigDecimal subtractFromPrice(BigDecimal price, BigDecimal discount) {
+        if (price == null || discount == null) {
+            return BigDecimal.ZERO; // Return zero if either price or discount is null
+        }
         BigDecimal percent = discount.divide(BigDecimal.valueOf(100));
         return price.subtract(price.multiply(percent));
     }
+//    public BigDecimal subtractFromPrice(BigDecimal price, BigDecimal discount) {
+//        BigDecimal percent = discount.divide(BigDecimal.valueOf(100));
+//        return price.subtract(price.multiply(percent));
+//    }
 
     //-----------------------------------add cashiers to set-------------------------------------------
     public void addCashierToSet(Cashiers cashier) {
