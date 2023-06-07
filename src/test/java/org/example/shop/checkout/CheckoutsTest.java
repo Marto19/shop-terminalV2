@@ -206,48 +206,45 @@ class CheckoutsTest {
         assertEquals("org.example.shop.exceptions.NameException: Invalid goods name. Please try again.", exception.getMessage());
     }
 
-//    @Test
-//    public void testUpdateStoreGoods_ExpiryDateDiscount() {
-//        // Create a mock of the Shop class
-//        Shop shop = Mockito.mock(Shop.class);
-//
-//        Goods goods = new Goods("Apple", BigDecimal.valueOf(1.0), GoodsType.FOOD, LocalDate.now().plusDays(7), 10);
-//        shop.addGoodsToSet(goods);
-//        HashMap<String, Integer> shoppingList = new HashMap<>();
-//        shoppingList.put("Apple", 5);
-//
-//        // Mock the behavior of the calculateGoodsSellingPrice method
-//        Mockito.when(shop.calculateGoodsSellingPrice(Mockito.any(Goods.class), Mockito.any(BigDecimal.class)))
-//                .thenReturn(BigDecimal.valueOf(1.5));
-//
-//        // Update the store goods
-//        Checkouts checkouts = new Checkouts();
-//        checkouts.updateStoreGoods(shop, shoppingList);
-//
-//        assertEquals(5, goods.getQuantity());
-//        assertEquals(1, shop.getSoldItems().size());
-//        SoldGoods soldGoods = shop.getSoldItems().iterator().next();
-//
-//        // Verify the final price is correctly set
-//        assertNotNull(soldGoods.getFinalPrice());
-//        assertEquals(BigDecimal.valueOf(1.5), soldGoods.getFinalPrice());
-//    }
-//
-//    @Test
-//    public void testUpdateStoreGoods_GoodsWithNoExpiryDate() {
-//        Shop shop = new Shop(BigDecimal.ZERO, BigDecimal.ZERO, 5, BigDecimal.valueOf(0.1), 1);
-//        Goods goods = new Goods("Apple", BigDecimal.valueOf(1.0), GoodsType.FOOD, null, 10);
-//        shop.getStoreGoods().add(goods);
-//        HashMap<String, Integer> shoppingList = new HashMap<>();
-//        shoppingList.put("Apple", 5);
-//
-//        checkouts.updateStoreGoods(shop, shoppingList);
-//
-//        assertEquals(5, goods.getQuantity());
-//        assertEquals(1, shop.getSoldItems().size());
-//        SoldGoods soldGoods = shop.getSoldItems().iterator().next();
-//        assertEquals(BigDecimal.ONE, soldGoods.getFinalPrice());
-//    }
+
+
+    @Test
+    public void testUpdateStoreGoods_ExpiryDateDiscount() {
+        // Create a mock Shop object and other dependencies
+        Shop shop = new Shop(BigDecimal.ZERO, BigDecimal.ZERO, 0, BigDecimal.ZERO, 1);
+        Checkouts checkouts = new Checkouts();
+        Cashiers cashiers = new Cashiers("Cashier Name", UUID.randomUUID(), BigDecimal.ZERO);
+
+        // Create a mock product with an expiry date and a discount
+        Goods product = new Goods("Product 1", BigDecimal.valueOf(10), GoodsType.FOOD, LocalDate.now().plusDays(5), 10);
+        product.setFinalPrice(BigDecimal.valueOf(8)); // Apply discount to the final price
+
+        // Add the product to the shop's goods inventory
+        shop.getStoreGoods().add(product);
+        // Create a mock shopping list with the purchased quantity of the product
+        HashMap<String, Integer> shoppingList = new HashMap<>();
+        shoppingList.put(product.getName(), 2);
+
+        // Call the method being tested
+        checkouts.updateStoreGoods(shop, shoppingList);
+
+        // Assert that the quantity of the product is updated in the storeGoods
+        assertEquals(8, product.getQuantity()); // Initial quantity (10) - Purchased quantity (2)
+
+        // Assert that the product is added to the soldItems set with the correct quantity
+        SoldGoods soldGoods = checkouts.findSoldGoodsByName(shop.getSoldItems(), product.getName());
+        assertNotNull(soldGoods);
+        assertEquals(2, soldGoods.getQuantity());
+
+        // Assert that the discount is applied correctly
+        BigDecimal expectedFinalPrice = BigDecimal.valueOf(8); // Final price with discount applied
+        assertEquals(expectedFinalPrice, soldGoods.getFinalPrice());
+    }
+
+    @Test
+    public void testUpdateStoreGoods_GoodsWithNoExpiryDate() {
+
+    }
 
     @Test
     void testCreateReceipt() {

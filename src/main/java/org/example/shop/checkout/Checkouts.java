@@ -214,7 +214,7 @@ public class Checkouts implements CheckoutServices, Serializable{
         }
     }
 
-    private SoldGoods findSoldGoodsByName(Set<SoldGoods> soldItems, String goodsName) {
+    protected SoldGoods findSoldGoodsByName(Set<SoldGoods> soldItems, String goodsName) {
         for (SoldGoods soldGoods : soldItems) {
             if (soldGoods.getName().equals(goodsName)) {
                 return soldGoods;
