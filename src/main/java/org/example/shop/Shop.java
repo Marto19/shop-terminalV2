@@ -268,7 +268,7 @@ public class Shop implements ShopServices {
         return getStoreGoods().stream()
                 .map(goods -> {
                     BigDecimal finalPrice = goods.getFinalPrice();
-                    if (finalPrice != null) {
+                    if (finalPrice != BigDecimal.ZERO) { //its was null
                         return finalPrice.multiply(BigDecimal.valueOf(goods.getQuantity()));
                     } else {
                         return BigDecimal.ZERO;

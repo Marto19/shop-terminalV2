@@ -367,31 +367,67 @@ class ShopTest {
     }
 
     @Test
-    void shopInventarExpenses() {
-        // Create a list of store goods
-        Set<Goods> storeGoods = new HashSet<>();
-        storeGoods.add(new Goods("Apple", BigDecimal.valueOf(2.99), GoodsType.FOOD, LocalDate.now(), 10));
-        storeGoods.add(new Goods("Banana", BigDecimal.valueOf(1.49), GoodsType.FOOD, LocalDate.now(), 5));
-        storeGoods.add(new Goods("Orange", BigDecimal.valueOf(0.99), GoodsType.FOOD, LocalDate.now(), 8));
+    public void shopInventarExpenses() {
+        // Create some test goods
+        Goods goods1 = new Goods("Item 1", BigDecimal.valueOf(2.5), GoodsType.FOOD, LocalDate.now(), 5);
+        Goods goods2 = new Goods("Item 2", BigDecimal.valueOf(1.5), GoodsType.NONFOOD, null, 10);
+        Goods goods3 = new Goods("Item 3", BigDecimal.valueOf(3.0), GoodsType.FOOD, LocalDate.now(), 3);
 
-        // Set the store goods in the shop
+        // Set the final prices for the goods
+        goods1.setFinalPrice(BigDecimal.valueOf(10));
+        goods2.setFinalPrice(BigDecimal.valueOf(15));
+        goods3.setFinalPrice(BigDecimal.valueOf(9));
+
+        // Create a Shop instance
+        Shop shop = new Shop(BigDecimal.ZERO, BigDecimal.ZERO, 0, BigDecimal.ZERO, 1);
+
+        // Add the goods to the Shop's storeGoods set
+        Set<Goods> storeGoods = new HashSet<>();
+        storeGoods.add(goods1);
+        storeGoods.add(goods2);
+        storeGoods.add(goods3);
         shop.setStoreGoods(storeGoods);
 
-        // Call the method under test
-        BigDecimal totalExpenses = shop.shopInventarExpenses();
-
         // Calculate the expected total expenses
-        BigDecimal expectedExpenses = BigDecimal.ZERO;
-        for (Goods goods : storeGoods) {
-            BigDecimal finalPrice = goods.getFinalPrice();
-            if (finalPrice != null) {
-                BigDecimal itemExpenses = finalPrice.multiply(BigDecimal.valueOf(goods.getQuantity()));
-                expectedExpenses = expectedExpenses.add(itemExpenses);
-            }
-        }
+        BigDecimal expectedExpenses = BigDecimal.valueOf(10 * 5 + 15 * 10 + 9 * 3);
 
-        // Assert the expected total expenses and the actual total expenses
-        assertEquals(expectedExpenses, totalExpenses);
+        // Invoke the method under test
+        BigDecimal result = shop.shopInventarExpenses();
+
+        // Verify the expected result
+        Assertions.assertEquals(expectedExpenses, result);
+    }
+
+    @Test
+    public void shopInventarExpenses_AllGoodsWithoutFinalPrice() {
+        // Create some test goods
+        Goods goods1 = new Goods("Item 1", BigDecimal.valueOf(2.5), GoodsType.FOOD, LocalDate.now(), 5);
+        Goods goods2 = new Goods("Item 2", BigDecimal.valueOf(1.5), GoodsType.NONFOOD, null, 10);
+        Goods goods3 = new Goods("Item 3", BigDecimal.valueOf(3.0), GoodsType.FOOD, LocalDate.now(), 3);
+
+        // Set the final prices as null for all goods
+        goods1.setFinalPrice(BigDecimal.valueOf(0));
+        goods2.setFinalPrice(BigDecimal.valueOf(0));
+        goods3.setFinalPrice(BigDecimal.valueOf(0));
+
+        // Create a Shop instance
+        Shop shop = new Shop(BigDecimal.ZERO, BigDecimal.ZERO, 0, BigDecimal.ZERO, 1);
+
+        // Add the goods to the Shop's storeGoods set
+        Set<Goods> storeGoods = new HashSet<>();
+        storeGoods.add(goods1);
+        storeGoods.add(goods2);
+        storeGoods.add(goods3);
+        shop.setStoreGoods(storeGoods);
+
+        // Expected result is BigDecimal.ZERO
+        BigDecimal expectedExpenses = BigDecimal.ZERO;
+
+        // Invoke the method under test
+        BigDecimal result = shop.shopInventarExpenses();
+
+        // Verify the expected result
+        Assertions.assertEquals(expectedExpenses, result);
     }
 
     @Test
