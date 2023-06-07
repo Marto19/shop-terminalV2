@@ -58,11 +58,8 @@ class CheckoutsTest {
         shoppingList.put("Banana", 2);
     }
 
-    @Test
-    void testSellGoods() {
+    //TODO - test the sell methods
 
-
-    }
 
 
     @Test
