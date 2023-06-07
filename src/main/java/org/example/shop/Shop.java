@@ -153,10 +153,7 @@ public class Shop implements ShopServices {
         BigDecimal percent = discount.divide(BigDecimal.valueOf(100));
         return price.subtract(price.multiply(percent));
     }
-//    public BigDecimal subtractFromPrice(BigDecimal price, BigDecimal discount) {
-//        BigDecimal percent = discount.divide(BigDecimal.valueOf(100));
-//        return price.subtract(price.multiply(percent));
-//    }
+
 
     //-----------------------------------add cashiers to set-------------------------------------------
     public void addCashierToSet(Cashiers cashier) {
@@ -218,7 +215,7 @@ public class Shop implements ShopServices {
             System.out.println((i + 1) + ": " + checkoutsWithCashiers.get(i).getKey());
         }
     }
-    private Map.Entry<Checkouts, Cashiers> getUserChoice(List<Map.Entry<Checkouts, Cashiers>> checkoutsWithCashiers) {
+    protected Map.Entry<Checkouts, Cashiers> getUserChoice(List<Map.Entry<Checkouts, Cashiers>> checkoutsWithCashiers) {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Choose a checkout (1-" + checkoutsWithCashiers.size() + "): ");
         int choice = scanner.nextInt();

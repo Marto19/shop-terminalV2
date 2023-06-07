@@ -6,13 +6,16 @@ import org.example.shop.goods.Goods;
 import org.example.shop.goods.GoodsType;
 import org.example.shop.goods.SoldGoods;
 import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -274,6 +277,38 @@ class ShopTest {
 
 
     @Test
+    public void chooseCheckoutWithCashierE() {
+        // Create mock objects
+        Checkouts checkout1 = mock(Checkouts.class);
+        Checkouts checkout2 = mock(Checkouts.class);
+        Cashiers cashier1 = mock(Cashiers.class);
+        Cashiers cashier2 = mock(Cashiers.class);
+
+        // Create a Shop instance
+        Shop shop = new Shop(BigDecimal.ZERO, BigDecimal.ZERO, 0, BigDecimal.ZERO, 2);
+
+        // Populate the checkoutsCashiersMap
+        shop.getCheckoutsCashiersMap().put(checkout1, cashier1);
+        shop.getCheckoutsCashiersMap().put(checkout2, cashier2);
+
+        // Mock getUserChoice method to return the first entry in the map
+        Map.Entry<Checkouts, Cashiers> expectedEntry = Map.entry(checkout1, cashier1);
+        Shop spyShop = spy(shop);
+        doReturn(expectedEntry).when(spyShop).getUserChoice(anyList());
+
+        // Invoke the method under test
+        Map.Entry<Checkouts, Cashiers> result = spyShop.chooseCheckoutWithCashier();
+
+        // Verify the expected interactions
+        verify(spyShop).getUserChoice(anyList());
+
+        // Verify the expected result
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(expectedEntry, result);
+    }
+
+
+    @Test
     void calculateCashierExpenses() {
         // Create mock Cashiers objects
         Cashiers cashier1 = mock(Cashiers.class);
@@ -372,4 +407,106 @@ class ShopTest {
             BigDecimal income = shop.calculateIncome();
         });
     }
+
+    @Test
+    public void testShopInventarExpenses() {
+        // Create a set of goods
+        Set<Goods> goodsSet = new HashSet<>();
+
+        Goods item1 = new Goods("Item 1", BigDecimal.valueOf(5), GoodsType.FOOD, LocalDate.now(), 1);
+        item1.setFinalPrice(BigDecimal.valueOf(5)); // Set the final price
+        goodsSet.add(item1);
+
+        Goods item2 = new Goods("Item 2", BigDecimal.valueOf(8), GoodsType.NONFOOD, null, 1);
+        item2.setFinalPrice(BigDecimal.valueOf(8)); // Set the final price
+        goodsSet.add(item2);
+
+        Goods item3 = new Goods("Item 3", BigDecimal.valueOf(12), GoodsType.FOOD, LocalDate.now().plusDays(7), 1);
+        item3.setFinalPrice(BigDecimal.valueOf(12)); // Set the final price
+        goodsSet.add(item3);
+
+        // Create a shop
+        Shop shop = new Shop(BigDecimal.valueOf(0.1), BigDecimal.valueOf(0.2), 5, BigDecimal.valueOf(0.5), 1);
+        shop.setStoreGoods(goodsSet);
+
+        // Calculate and assert the inventory expenses
+        BigDecimal inventarExpenses = shop.shopInventarExpenses();
+        Assertions.assertEquals(BigDecimal.valueOf(25), inventarExpenses);
+    }
+
+    @Test
+    public void testApplyMarkup() {
+        BigDecimal foodMarkup = BigDecimal.valueOf(10);
+        BigDecimal nonFoodMarkup = BigDecimal.valueOf(5);
+        int daysUntilExpiryDiscount = 7;
+        BigDecimal expiryDiscount = BigDecimal.valueOf(20);
+        int numberOfCheckouts = 3;
+
+        Shop shop = new Shop(foodMarkup, nonFoodMarkup, daysUntilExpiryDiscount, expiryDiscount, numberOfCheckouts);
+
+        BigDecimal cost = BigDecimal.valueOf(100);
+        BigDecimal markup = shop.getFoodMarkup();
+
+        Goods goods = new Goods("Product", BigDecimal.TEN, GoodsType.FOOD, LocalDate.now().plusDays(7), 5);
+        shop.applyMarkup(cost, markup, goods);
+
+        BigDecimal expectedFinalPrice = BigDecimal.valueOf(110.0);
+        BigDecimal actualFinalPrice = goods.getFinalPrice();
+
+        Assertions.assertEquals(expectedFinalPrice, actualFinalPrice);
+    }
+
+    @Test
+    public void testGetUserChoice() {
+        // Create a Shop object
+        Shop shop = new Shop(BigDecimal.ZERO, BigDecimal.ZERO, 0, BigDecimal.ZERO, 0);
+
+        // Create sample data for checkoutsWithCashiers
+        List<Map.Entry<Checkouts, Cashiers>> checkoutsWithCashiers = List.of(
+                new AbstractMap.SimpleEntry<>(new Checkouts(), new Cashiers("Cashier 1", UUID.randomUUID(), BigDecimal.ZERO)),
+                new AbstractMap.SimpleEntry<>(new Checkouts(), new Cashiers("Cashier 2", UUID.randomUUID(), BigDecimal.ZERO))
+        );
+
+        // Set up the input stream with test input
+        String testInput = "1\n"; // Simulate user input "1"
+        InputStream inputStream = new ByteArrayInputStream(testInput.getBytes());
+        System.setIn(inputStream);
+
+        // Call the getUserChoice method
+        Map.Entry<Checkouts, Cashiers> userChoice = shop.getUserChoice(checkoutsWithCashiers);
+
+        // Assert the expected result
+        Assertions.assertNotNull(userChoice);
+        Assertions.assertEquals(checkoutsWithCashiers.get(0), userChoice);
+
+        // Clean up the input stream
+        System.setIn(System.in);
+    }
+
+    @Test
+    public void testGetUserChoice_InvalidChoice() {
+        // Create a Shop object
+        Shop shop = new Shop(BigDecimal.ZERO, BigDecimal.ZERO, 0, BigDecimal.ZERO, 0);
+
+        // Create sample data for checkoutsWithCashiers
+        List<Map.Entry<Checkouts, Cashiers>> checkoutsWithCashiers = List.of(
+                new AbstractMap.SimpleEntry<>(new Checkouts(), new Cashiers("Cashier 1", UUID.randomUUID(), BigDecimal.ZERO)),
+                new AbstractMap.SimpleEntry<>(new Checkouts(), new Cashiers("Cashier 2", UUID.randomUUID(), BigDecimal.ZERO))
+        );
+
+        // Set up the input stream with test input
+        String testInput = "3\n"; // Simulate user input "3" (invalid choice)
+        InputStream inputStream = new ByteArrayInputStream(testInput.getBytes());
+        System.setIn(inputStream);
+
+        // Call the getUserChoice method
+        Map.Entry<Checkouts, Cashiers> userChoice = shop.getUserChoice(checkoutsWithCashiers);
+
+        // Assert the expected result
+        Assertions.assertNull(userChoice);
+
+        // Clean up the input stream
+        System.setIn(System.in);
+    }
+
 }
