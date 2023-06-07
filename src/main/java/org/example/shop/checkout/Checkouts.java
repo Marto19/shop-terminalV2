@@ -243,36 +243,5 @@ public class Checkouts implements CheckoutServices, Serializable{
 
         return receipt;
     }
-    //fix this:Receipt{...., shoppedGoods=[], totalAmount=0}
 
-
-//    @Override
-//    public void serializeReceipt(Receipt receipt, String filePath) {
-//        try {
-//            FileOutputStream fileOut = new FileOutputStream(filePath);
-//            ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
-//            objectOut.writeObject(receipt);
-//            objectOut.close();
-//            fileOut.close();
-//            System.out.println("Receipt serialized and saved to: " + filePath);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-//    @Override
-//    public Receipt deserializeReceipt(String filePath) {
-//        Receipt receipt = null;
-//        try {
-//            FileInputStream fileIn = new FileInputStream(filePath);
-//            ObjectInputStream objectIn = new ObjectInputStream(fileIn);
-//            receipt = (Receipt) objectIn.readObject();
-//            objectIn.close();
-//            fileIn.close();
-//            System.out.println("Receipt deserialized from: " + filePath);
-//        } catch (IOException | ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//        return receipt;
-//    }
 }
