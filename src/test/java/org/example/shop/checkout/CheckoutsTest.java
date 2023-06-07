@@ -60,61 +60,38 @@ class CheckoutsTest {
 
     @Test
     void testSellGoods() {
-//        // Prepare test data
-//        Shop shop = new Shop(BigDecimal.valueOf(0.1), BigDecimal.valueOf(0.2), 7, BigDecimal.valueOf(0.5), 5);
-//        Cashiers cashiers = new Cashiers("John", UUID.randomUUID(), BigDecimal.valueOf(2000));
-//        Checkouts checkouts = new Checkouts();
-//        Goods apple = new Goods("Apple", BigDecimal.valueOf(1.0), GoodsType.FOOD, LocalDate.now().plusDays(3), 5);
-//        Goods banana = new Goods("Banana", BigDecimal.valueOf(1.5), GoodsType.FOOD, LocalDate.now().plusDays(5), 5);
-//
-//        shop.getStoreGoods().add(apple);
-//        shop.getStoreGoods().add(banana);
-//        BigDecimal balance = BigDecimal.valueOf(100);
-//        HashMap<String, Integer> shoppingList = new HashMap<>();
-//        shoppingList.put("Apple", 3);
-//        shoppingList.put("Banana", 2);
-//
-//        // Create a mock instance of Checkouts and Cashiers
-//        Checkouts mockCheckouts = Mockito.mock(Checkouts.class);
-//        Cashiers mockCashiers = Mockito.mock(Cashiers.class);
-//
-//        // Create an instance of the class under test
-//        checkouts = new Checkouts();
-//
-//        // Call the method under test
-//        checkouts.sellGoods(shop, balance, shoppingList, mockCheckouts, mockCashiers);
-//
-//        // Verify that the methods are being called
-//        Mockito.verify(mockCheckouts).scanGoods(shop, balance, shoppingList);
-//        Mockito.verify(mockCheckouts).checkCustomersBalance(balance, Mockito.any(BigDecimal.class));
-//        Mockito.verify(mockCheckouts).updateStoreGoods(shop, shoppingList);
-//        Mockito.verify(mockCheckouts).createReceipt(shoppingList, shop, mockCheckouts, mockCashiers, Mockito.any(BigDecimal.class));
+
+
     }
 
 
     @Test
     void testScanGoods() {
-//        Shop shop = new Shop(BigDecimal.valueOf(0.1), BigDecimal.valueOf(0.2), 7, BigDecimal.valueOf(0.5), 5);
-//        Goods apple = new Goods("Apple", BigDecimal.valueOf(1.0), GoodsType.FOOD, LocalDate.now().plusDays(3), 5);
-//        Goods banana = new Goods("Banana", BigDecimal.valueOf(1.5), GoodsType.FOOD, LocalDate.now().plusDays(5), 5);
-//
-//        shop.getStoreGoods().add(apple);
-//        shop.getStoreGoods().add(banana);
-//
-//        BigDecimal balance = BigDecimal.valueOf(100);
-//        HashMap<String, Integer> shoppingList = new HashMap<>();
-//        shoppingList.put("Apple", 3);
-//        shoppingList.put("Banana", 2);
-//
-//        // Create an instance of the class under test
-//        Checkouts checkouts = new Checkouts();
-//
-//        // Call the method under test
-//        BigDecimal totalSum = checkouts.scanGoods(shop, balance, shoppingList);
-//
-//        // Verify the results
-//        BigDecimal expectedSum = BigDecimal.valueOf(6.5); // Calculate the expected total sum manually
-//        assertEquals(expectedSum, totalSum, "Total sum is incorrect");
+        Shop shop = new Shop(BigDecimal.valueOf(0.1), BigDecimal.valueOf(0.2), 7, BigDecimal.valueOf(0.5), 5);
+        Goods apple = new Goods("Apple", BigDecimal.valueOf(1.0), GoodsType.FOOD, LocalDate.now().plusDays(3), 5);
+        Goods banana = new Goods("Banana", BigDecimal.valueOf(1.5), GoodsType.FOOD, LocalDate.now().plusDays(5), 5);
+
+        // Set the final price for the goods
+        apple.setFinalPrice(BigDecimal.valueOf(1.0));
+        banana.setFinalPrice(BigDecimal.valueOf(1.5));
+
+        shop.getStoreGoods().add(apple);
+        shop.getStoreGoods().add(banana);
+
+        BigDecimal balance = BigDecimal.valueOf(100);
+        HashMap<String, Integer> shoppingList = new HashMap<>();
+        shoppingList.put("Apple", 3);
+        shoppingList.put("Banana", 2);
+
+        // Create an instance of the class under test
+        Checkouts checkouts = new Checkouts();
+
+        // Call the method under test
+        BigDecimal totalSum = checkouts.scanGoods(shop, balance, shoppingList);
+
+        // Verify the results
+        BigDecimal expectedSum = BigDecimal.valueOf(6.0); // Calculate the expected total sum manually
+        assertEquals(expectedSum, totalSum, "Total sum is incorrect");
     }
 
     @Test
