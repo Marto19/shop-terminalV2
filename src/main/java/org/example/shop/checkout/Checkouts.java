@@ -3,10 +3,7 @@ package org.example.shop.checkout;
 import org.example.shop.Cashiers;
 import org.example.shop.deSerialization.ReceiptSerializer;
 import org.example.shop.Shop;
-import org.example.shop.exceptions.ExpiryDateException;
-import org.example.shop.exceptions.InsufficientBalance;
-import org.example.shop.exceptions.NameException;
-import org.example.shop.exceptions.NotEnoughQuantity;
+import org.example.shop.exceptions.*;
 import org.example.shop.goods.Goods;
 import org.example.shop.goods.GoodsType;
 import org.example.shop.goods.SoldGoods;
@@ -37,9 +34,7 @@ public class Checkouts implements CheckoutServices, Serializable{
 
     @Override
     public void sellGoods(Shop shop, BigDecimal balance, HashMap<String, Integer> shoppingList, Checkouts checkouts, Cashiers cashiers) {        //CHECK THE AVAILABILITY - NAME, QUANTITY
-        //checkGoodsAvailability(shop,  name, quantity);
-        //CHECK CUSTOMERS BALANCE AVAILABILITY
-        //checkCustomersBalance(balance);
+
         BigDecimal totalValue = scanGoods(shop, balance, shoppingList);
         //checkCustomersBalance(balance, totalValue);
         checkCustomersBalance(balance, totalValue);
@@ -65,6 +60,8 @@ public class Checkouts implements CheckoutServices, Serializable{
         System.out.println("Receipt set: " + shop.getReceiptSet());
         System.out.println("Number of receipts: " + shop.getNumberOfReceipt());
     }
+
+
 
     @Override
     public BigDecimal scanGoods(Shop shop, BigDecimal balance, HashMap<String, Integer> shoppingList) {
