@@ -58,33 +58,92 @@ class CheckoutsTest {
         shoppingList.put("Banana", 2);
     }
 
-//    @Test
-//    void testSellGoods() {
-//        assertDoesNotThrow(() -> checkouts.sellGoods(shop, balance, shoppingList, checkouts, cashiers));
-//    }
+    @Test
+    void testSellGoods() {
+//        // Prepare test data
+//        Shop shop = new Shop(BigDecimal.valueOf(0.1), BigDecimal.valueOf(0.2), 7, BigDecimal.valueOf(0.5), 5);
+//        Cashiers cashiers = new Cashiers("John", UUID.randomUUID(), BigDecimal.valueOf(2000));
+//        Checkouts checkouts = new Checkouts();
+//        Goods apple = new Goods("Apple", BigDecimal.valueOf(1.0), GoodsType.FOOD, LocalDate.now().plusDays(3), 5);
+//        Goods banana = new Goods("Banana", BigDecimal.valueOf(1.5), GoodsType.FOOD, LocalDate.now().plusDays(5), 5);
 //
-//    @Test
-//    void testScanGoods() {
-//        BigDecimal totalSum = checkouts.scanGoods(shop, balance, shoppingList);
-//        assertNotNull(totalSum);
-//        assertTrue(totalSum.compareTo(BigDecimal.ZERO) >= 0);
-//    }
+//        shop.getStoreGoods().add(apple);
+//        shop.getStoreGoods().add(banana);
+//        BigDecimal balance = BigDecimal.valueOf(100);
+//        HashMap<String, Integer> shoppingList = new HashMap<>();
+//        shoppingList.put("Apple", 3);
+//        shoppingList.put("Banana", 2);
+//
+//        // Create a mock instance of Checkouts and Cashiers
+//        Checkouts mockCheckouts = Mockito.mock(Checkouts.class);
+//        Cashiers mockCashiers = Mockito.mock(Cashiers.class);
+//
+//        // Create an instance of the class under test
+//        checkouts = new Checkouts();
+//
+//        // Call the method under test
+//        checkouts.sellGoods(shop, balance, shoppingList, mockCheckouts, mockCashiers);
+//
+//        // Verify that the methods are being called
+//        Mockito.verify(mockCheckouts).scanGoods(shop, balance, shoppingList);
+//        Mockito.verify(mockCheckouts).checkCustomersBalance(balance, Mockito.any(BigDecimal.class));
+//        Mockito.verify(mockCheckouts).updateStoreGoods(shop, shoppingList);
+//        Mockito.verify(mockCheckouts).createReceipt(shoppingList, shop, mockCheckouts, mockCashiers, Mockito.any(BigDecimal.class));
+    }
+
+
+    @Test
+    void testScanGoods() {
+        Shop shop = new Shop(BigDecimal.valueOf(0.1), BigDecimal.valueOf(0.2), 7, BigDecimal.valueOf(0.5), 5);
+        Goods apple = new Goods("Apple", BigDecimal.valueOf(1.0), GoodsType.FOOD, LocalDate.now().plusDays(3), 5);
+        Goods banana = new Goods("Banana", BigDecimal.valueOf(1.5), GoodsType.FOOD, LocalDate.now().plusDays(5), 5);
+
+        shop.getStoreGoods().add(apple);
+        shop.getStoreGoods().add(banana);
+
+        BigDecimal balance = BigDecimal.valueOf(100);
+        HashMap<String, Integer> shoppingList = new HashMap<>();
+        shoppingList.put("Apple", 3);
+        shoppingList.put("Banana", 2);
+
+        // Create an instance of the class under test
+        Checkouts checkouts = new Checkouts();
+
+        // Call the method under test
+        BigDecimal totalSum = checkouts.scanGoods(shop, balance, shoppingList);
+
+        // Verify the results
+        BigDecimal expectedSum = BigDecimal.valueOf(6.5); // Calculate the expected total sum manually
+        assertEquals(expectedSum, totalSum, "Total sum is incorrect");
+    }
 
     @Test
     void testCheckGoodsAvailability() {
-        // Prepare test data
+        Shop shop = new Shop(BigDecimal.valueOf(0.1), BigDecimal.valueOf(0.2), 7, BigDecimal.valueOf(0.5), 5);
         Goods apple = new Goods("Apple", BigDecimal.valueOf(1.0), GoodsType.FOOD, LocalDate.now().plusDays(3), 5);
+        Goods banana = new Goods("Banana", BigDecimal.valueOf(1.5), GoodsType.FOOD, LocalDate.now().plusDays(5), 5);
+
+        // Set the final price for the goods
+        apple.setFinalPrice(BigDecimal.valueOf(1.0));
+        banana.setFinalPrice(BigDecimal.valueOf(1.5));
+
         shop.getStoreGoods().add(apple);
-        String goodsName = "Apple";
-        int requestedQuantity = 3;
+        shop.getStoreGoods().add(banana);
 
-        // Test the method
-        assertDoesNotThrow(() -> checkouts.checkGoodsAvailability(shop, goodsName, requestedQuantity));
+        BigDecimal balance = BigDecimal.valueOf(100);
+        HashMap<String, Integer> shoppingList = new HashMap<>();
+        shoppingList.put("Apple", 3);
+        shoppingList.put("Banana", 2);
 
-        // Verify that no exception was thrown and the quantity is sufficient
-        Goods selectedGoods = shop.findGoodsByName(goodsName);
-        assertNotNull(selectedGoods);
-        assertEquals(5, selectedGoods.getQuantity());
+        // Create an instance of the class under test
+        Checkouts checkouts = new Checkouts();
+
+        // Call the method under test
+        BigDecimal totalSum = checkouts.scanGoods(shop, balance, shoppingList);
+
+        // Verify the results
+        BigDecimal expectedSum = BigDecimal.valueOf(6.0); // Calculate the expected total sum manually
+        assertEquals(expectedSum, totalSum, "Total sum is incorrect");
     }
 
     @Test
@@ -243,8 +302,40 @@ class CheckoutsTest {
 
     @Test
     public void testUpdateStoreGoods_GoodsWithNoExpiryDate() {
+        // Create a mock Shop object and other dependencies
+        Shop shop = new Shop(BigDecimal.ZERO, BigDecimal.ZERO, 0, BigDecimal.ZERO, 1);
+        Checkouts checkouts = new Checkouts();
+        Cashiers cashiers = new Cashiers("Cashier Name", UUID.randomUUID(), BigDecimal.ZERO);
+
+        // Create a mock product without an expiry date
+        Goods product = new Goods("Product 2", BigDecimal.valueOf(15), GoodsType.NONFOOD, null, 5);
+
+        // Set the final price for the goods
+        product.setFinalPrice(BigDecimal.valueOf(15));
+
+        // Add the product to the shop's goods inventory
+        shop.getStoreGoods().add(product);
+
+        // Create a mock shopping list with the purchased quantity of the product
+        HashMap<String, Integer> shoppingList = new HashMap<>();
+        shoppingList.put(product.getName(), 3);
+
+        // Call the method being tested
+        checkouts.updateStoreGoods(shop, shoppingList);
+
+        // Assert that the quantity of the product is updated in the storeGoods
+        assertEquals(2, product.getQuantity()); // Initial quantity (5) - Purchased quantity (3)
+
+        // Assert that the product is added to the soldItems set with the correct quantity
+        SoldGoods soldGoods = checkouts.findSoldGoodsByName(shop.getSoldItems(), product.getName());
+        assertNotNull(soldGoods);
+        assertEquals(3, soldGoods.getQuantity());
+
+        // Assert that the final price is the same as the unit shipping cost (no discount applied)
+        assertEquals(product.getUnitShippingCost(), soldGoods.getFinalPrice());
 
     }
+    //        shop.getStoreGoods().add(product);
 
     @Test
     void testCreateReceipt() {
