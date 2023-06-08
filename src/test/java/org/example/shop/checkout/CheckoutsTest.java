@@ -121,7 +121,7 @@ class CheckoutsTest {
     }
 
     @Test
-    void testCheckGoodsAvailability_NameException() {
+    void testCheckGoodsAvailability_Name() {
         // Prepare test data
         String goodsName = "Orange";
         int requestedQuantity = 2;
@@ -129,6 +129,25 @@ class CheckoutsTest {
         // Test the method and expect RuntimeException
         assertThrows(RuntimeException.class, () -> checkouts.checkGoodsAvailability(shop, goodsName, requestedQuantity));
     }
+
+    @Test
+    void testCheckGoodsAvailability_NameException() {
+        // Prepare test data
+        String goodsName = "Orange";
+        int requestedQuantity = 2;
+
+        // Mock the behavior of the shop to return null when finding goods by name
+        Shop mockShop = mock(Shop.class);
+        when(mockShop.findGoodsByName(goodsName)).thenReturn(null);
+
+        // Test the method and expect RuntimeException
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> checkouts.checkGoodsAvailability(mockShop, goodsName, requestedQuantity));
+
+        // Verify that the exception message is correct
+        assertEquals("org.example.shop.exceptions.NameException: Invalid goods name. Please try again.", exception.getMessage());
+    }
+
 
 
     @Test
